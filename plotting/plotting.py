@@ -12,7 +12,7 @@ with the additional restriction that it may not be used for commercial purposes.
 For more details about GPL-3.0: https://www.gnu.org/licenses/gpl-3.0.html
 """
 
-from typing import List
+from typing import List, Dict
 
 import numpy as np
 import seaborn as sns
@@ -88,6 +88,59 @@ def plot_optimal_selections(steps: int, optimal_selections: np.ndarray, algorith
     plt.grid(True)
     
     # Mostrar la gráfica
+    plt.show()
+
+
+def plot_arm_statistics(arm_stats: List[Dict], algorithms: List, *args):
+    """
+    Genera gráficas de estadísticas de selección de brazos:
+    Muestra el promedio de ganancias por brazo y el número de selecciones.
+    
+    :param arm_stats: Lista de diccionarios con estadísticas de cada brazo por algoritmo.
+                      Cada diccionario debe contener:
+                      - 'avg_rewards': np.array con promedio de recompensas por brazo.
+                      - 'selections': np.array con cantidad de veces que se seleccionó cada brazo.
+                      - 'optimal_arm': int con el índice del brazo óptimo.
+    :param algorithms: Lista de instancias de algoritmos comparados.
+    :param args: Parámetros adicionales que puedan ayudar en la visualización.
+    """
+
+    num_algorithms = len(algorithms)
+    fig, axes = plt.subplots(1, num_algorithms, figsize=(6 * num_algorithms, 5))
+
+    if num_algorithms == 1:
+        axes = [axes]  # Asegurar que sea iterable si hay un solo algoritmo
+
+    for idx, (algo, stats) in enumerate(zip(algorithms, arm_stats)):
+        avg_rewards = stats['avg_rewards']
+        selections = stats['selections']
+        optimal_arm = stats['optimal_arm']
+        num_arms = len(avg_rewards)
+
+        # Etiquetas en el eje X: número del brazo + veces seleccionado
+        labels = [f"Arm {i}\n({selections[i]:.0f} veces)" for i in range(num_arms)]
+
+        # Colores: Resaltar el brazo óptimo
+        colors = ['red' if i == optimal_arm else 'blue' for i in range(num_arms)]
+
+        # Crear gráfico de barras
+        axes[idx].bar(labels, avg_rewards, color=colors, alpha=0.7)
+
+        # Asegurar que los ticks están configurados antes de asignar etiquetas
+        axes[idx].set_xticks(range(len(labels)))  # Fijar posiciones de ticks
+        axes[idx].set_xticklabels(labels, rotation=45, fontsize=10, ha="right")  # Aplicar etiquetas
+
+
+        # Etiquetas y formato
+        axes[idx].set_title(f"Estadísticas de brazos - {get_algorithm_label(algo)}")
+        axes[idx].set_xlabel("Brazos (con número de selecciones)")
+        axes[idx].set_ylabel("Promedio de recompensas")
+        axes[idx].grid(axis='y', linestyle='--', alpha=0.6)
+
+        # Agregar leyenda
+        axes[idx].legend(["Óptimo" if i == optimal_arm else "No óptimo" for i in range(num_arms)], loc="best")
+
+    plt.tight_layout()
     plt.show()
 
 
