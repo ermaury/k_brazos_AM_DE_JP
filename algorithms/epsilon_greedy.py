@@ -41,7 +41,7 @@ class EpsilonGreedy(Algorithm):
         :rtype: str
         """
         label = type(self).__name__
-        label += f" (epsilon={algo.epsilon})"
+        label += f" (epsilon={self.epsilon})"
         return label
         
 
