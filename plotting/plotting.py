@@ -21,26 +21,6 @@ import matplotlib.pyplot as plt
 from algorithms import Algorithm, EpsilonGreedy
 
 
-def get_algorithm_label(algo: Algorithm) -> str:
-    """
-    Genera una etiqueta descriptiva para el algoritmo incluyendo sus parámetros.
-
-    :param algo: Instancia de un algoritmo.
-    :type algo: Algorithm
-    :return: Cadena descriptiva para el algoritmo.
-    :rtype: str
-    """
-    label = type(algo).__name__
-    if isinstance(algo, EpsilonGreedy):
-        label += f" (epsilon={algo.epsilon})"
-    # elif isinstance(algo, OtroAlgoritmo):
-    #     label += f" (parametro={algo.parametro})"
-    # Añadir más condiciones para otros algoritmos aquí
-    else:
-        raise ValueError("El algoritmo debe ser de la clase Algorithm o una subclase.")
-    return label
-
-
 def plot_average_rewards(steps: int, rewards: np.ndarray, algorithms: List[Algorithm]):
     """
     Genera la gráfica de Recompensa Promedio vs Pasos de Tiempo.
@@ -53,7 +33,7 @@ def plot_average_rewards(steps: int, rewards: np.ndarray, algorithms: List[Algor
 
     plt.figure(figsize=(14, 7))
     for idx, algo in enumerate(algorithms):
-        label = get_algorithm_label(algo)
+        label = algo.get_algorithm_label()
         plt.plot(range(steps), rewards[idx], label=label, linewidth=2)
 
     plt.xlabel('Pasos de Tiempo', fontsize=14)
@@ -78,7 +58,7 @@ def plot_optimal_selections(steps: int, optimal_selections: np.ndarray, algorith
 
     # Graficamos cada algoritmo
     for i, algorithm in enumerate(algorithms):
-        plt.plot(x_values, optimal_selections[i], label=get_algorithm_label(algorithm))
+        plt.plot(x_values, optimal_selections[i], label=algorithm.get_algorithm_label())
 
     # Configuración de la gráfica
     plt.xlabel("Pasos de tiempo")
@@ -89,7 +69,6 @@ def plot_optimal_selections(steps: int, optimal_selections: np.ndarray, algorith
     
     # Mostrar la gráfica
     plt.show()
-
 
 def plot_arm_statistics(arm_stats: List[Dict], algorithms: List, *args):
     """
@@ -106,7 +85,7 @@ def plot_arm_statistics(arm_stats: List[Dict], algorithms: List, *args):
     """
 
     num_algorithms = len(algorithms)
-    fig, axes = plt.subplots(1, num_algorithms, figsize=(6 * num_algorithms, 5))
+    fig, axes = plt.subplots(1, num_algorithms, figsize=(8 * num_algorithms, 6))  # Aumentar tamaño
 
     if num_algorithms == 1:
         axes = [axes]  # Asegurar que sea iterable si hay un solo algoritmo
@@ -124,24 +103,27 @@ def plot_arm_statistics(arm_stats: List[Dict], algorithms: List, *args):
         colors = ['red' if i == optimal_arm else 'blue' for i in range(num_arms)]
 
         # Crear gráfico de barras
-        axes[idx].bar(labels, avg_rewards, color=colors, alpha=0.7)
+        bars = axes[idx].bar(labels, avg_rewards, color=colors, alpha=0.7)
 
-        # Asegurar que los ticks están configurados antes de asignar etiquetas
+        # Ajustar etiquetas del eje X
         axes[idx].set_xticks(range(len(labels)))  # Fijar posiciones de ticks
-        axes[idx].set_xticklabels(labels, rotation=45, fontsize=10, ha="right")  # Aplicar etiquetas
-
+        axes[idx].set_xticklabels(labels, rotation=45, fontsize=12, ha="right")  # Fuente más grande
 
         # Etiquetas y formato
-        axes[idx].set_title(f"Estadísticas de brazos - {get_algorithm_label(algo)}")
-        axes[idx].set_xlabel("Brazos (con número de selecciones)")
-        axes[idx].set_ylabel("Promedio de recompensas")
+        axes[idx].set_title(f"Estadísticas de brazos - {algo.get_algorithm_label()}", fontsize=14)
+        axes[idx].set_xlabel("Brazos (con número de selecciones)", fontsize=12)
+        axes[idx].set_ylabel("Promedio de recompensas", fontsize=12)
         axes[idx].grid(axis='y', linestyle='--', alpha=0.6)
 
-        # Agregar leyenda
-        axes[idx].legend(["Óptimo" if i == optimal_arm else "No óptimo" for i in range(num_arms)], loc="best")
+        # Agregar leyenda con colores correctos
+        handles = [plt.Rectangle((0,0),1,1, color='red', alpha=0.7),
+                   plt.Rectangle((0,0),1,1, color='blue', alpha=0.7)]
+        labels = ["Óptimo", "No óptimo"]
+        axes[idx].legend(handles, labels, loc="best")
 
     plt.tight_layout()
     plt.show()
+
 
 
 def plot_regret(steps: int, regrets: np.ndarray, algorithms: List[Algorithm], *args):
@@ -160,7 +142,7 @@ def plot_regret(steps: int, regrets: np.ndarray, algorithms: List[Algorithm], *a
 
     # Graficar el regret para cada algoritmo
     for i, algorithm in enumerate(algorithms):
-        plt.plot(x_values, regrets[i], label=get_algorithm_label(algorithm))
+        plt.plot(x_values, regrets[i], label=algorithm.get_algorithm_label())
 
     # Si se proporciona una cota teórica (por ejemplo, C * ln(T)), la graficamos
     if args:

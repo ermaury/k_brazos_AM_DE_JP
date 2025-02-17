@@ -31,6 +31,20 @@ class EpsilonGreedy(Algorithm):
         super().__init__(k)
         self.epsilon = epsilon
 
+    def get_algorithm_label(self) -> str:
+        """
+        Genera una etiqueta descriptiva para el algoritmo incluyendo sus parámetros.
+    
+        :param algo: Instancia de un algoritmo.
+        :type algo: Algorithm
+        :return: Cadena descriptiva para el algoritmo.
+        :rtype: str
+        """
+        label = type(self).__name__
+        label += f" (epsilon={algo.epsilon})"
+        return label
+        
+
     def select_arm(self) -> int:
         """
         Selecciona un brazo basado en la política epsilon-greedy.

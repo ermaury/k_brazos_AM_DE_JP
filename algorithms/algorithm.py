@@ -37,6 +37,15 @@ class Algorithm(ABC):
         """
         raise NotImplementedError("Este método debe ser implementado por la subclase.")
 
+    @abstractmethod
+    def get_algorithm_label(self) -> str:
+        """
+        Genera una etiqueta descriptiva para el algoritmo incluyendo sus parámetros.
+        :return: Cadena descriptiva para el algoritmo.
+        :rtype: str
+        """
+        raise NotImplementedError("Este método debe ser implementado por la subclase.")
+
     def update(self, chosen_arm: int, reward: float):
         """
         Actualiza las recompensas promedio estimadas de cada brazo.
