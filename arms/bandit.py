@@ -34,6 +34,9 @@ class Bandit:
         self.expected_rewards = self.get_expected_rewards()
         self.optimal_arm = self.get_optimal_arm()
 
+    def get_type_arms(self):
+        return self.arms[0].__class__.__name__
+
     def pull_arm(self, index: int) -> float:
         """
         Pulls a specific arm and returns the reward.
