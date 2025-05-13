@@ -28,7 +28,7 @@ class UCB2(Algorithm):
 
         self.alpha = alpha
         self.k_a = np.zeros(k, dtype=int)  # Contador de épocas de cada brazo
-        self.r = np.zeros(k, dtype=int)  # Bloque de exploración por brazo
+        self.r = np.ones(k, dtype=int)
         self.t = 1  # Contador de pasos global
 
     def get_algorithm_label(self) -> str:
@@ -62,7 +62,9 @@ class UCB2(Algorithm):
                 return arm  # Continuar con el mismo brazo en su bloque de exploración
 
         # Calcular la ecuación de UCB2
-        confidence_bounds = self.values + np.sqrt((1 + self.alpha) * np.log((np.e * self.t) / (np.maximum(1, self.r)) + 1e-9) / (2 * (self.r + 1e-9)))
+        #confidence_bounds = self.values + np.sqrt((1 + self.alpha) * np.log((np.e * self.t) / (np.maximum(1, self.r)) + 1e-9) / (2 * (self.r + 1e-9)))
+        confidence_bounds = self.values + np.sqrt((1 + self.alpha) * np.log1p((np.e * self.t / np.maximum(1, self.r)) - 1) / (2 * np.maximum(1, self.r)))
+
 
         # Seleccionar el brazo con mayor UCB2
         chosen_arm = np.argmax(confidence_bounds)
@@ -87,5 +89,4 @@ class UCB2(Algorithm):
         super().reset()
         self.k_a = np.zeros(self.k, dtype=int)  # Contador de épocas de cada brazo
         self.r = np.zeros(self.k, dtype=int)  # Bloque de exploración por brazo
-        self.t = 1
         self.t = 1
