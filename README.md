@@ -2,12 +2,20 @@
 
 Este repositorio contiene el material y los experimentos realizados para la asignatura **Extensiones de Machine Learning** del Máster en Inteligencia Artificial de la Universidad de Murcia (UMU).
 
-El contenido se organiza en dos partes principales:
+## Contenido
 
-## P1 - Bandido de K-Brazos
+El repositorio se organiza en dos partes principales:
 
-Contiene los experimentos correspondientes a la primera parte de la Práctica 1, centrada en el problema del **bandido de k-brazos**, incluyendo los algoritmos de exploración-explotación estudiados.
+### P1 - Bandido de K-Brazos
 
-## P2 - Aprendizaje por Refuerzo
+Experimentos correspondientes a la primera parte de la Práctica 1, centrados en el problema del **bandido de k-brazos** (*k-armed bandit*), incluyendo el análisis de diferentes algoritmos de exploración-explotación.
 
-Incluye los experimentos desarrollados en la segunda parte de la Práctica 2, dedicados al estudio de algoritmos de **Aprendizaje por Refuerzo** (Reinforcement Learning), tanto tabulares como con aproximadores de función.
+### P2 - Aprendizaje por Refuerzo
+
+Experimentos desarrollados en la segunda parte de la Práctica 2, dedicados al estudio de algoritmos de **Aprendizaje por Refuerzo** (*Reinforcement Learning*), abarcando tanto enfoques tabulares como métodos con aproximadores de función.
+
+## Integrantes del grupo
+
+- Antonio Marín Ortega  
+- Darío Escudero de Paco  
+- Francisco Javier Pérez Pujalte
