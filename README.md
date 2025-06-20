@@ -65,7 +65,7 @@ Cada notebook incluye:
 
 ## Instalación y Uso
 
-- Requiere instalación de Python 3.9+ y las siguientes librerías:
+- Requiere instalación de Python 3.10+ y las siguientes librerías:
 
   - `numpy`
   - `matplotlib`
