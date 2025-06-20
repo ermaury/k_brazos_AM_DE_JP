@@ -19,7 +19,7 @@ from algorithms.algorithm import Algorithm
 class SoftmaxBandit(Algorithm):
     def __init__(self, k: int, tau: float = 0.1):
         """
-        Inicializa el algoritmo Softmax (Boltzmann Exploration).
+        Inicializa el algoritmo Softmax clásico (Boltzmann exploration).
 
         :param k: Número de brazos.
         :param tau: Temperatura para suavizar la probabilidad.
@@ -27,30 +27,29 @@ class SoftmaxBandit(Algorithm):
         super().__init__(k)
         assert tau > 0, "La temperatura tau debe ser positiva."
         self.tau = tau
-        self.preferences = np.zeros(k)
-        self.t = 0  # Contador de pasos
-        self.baseline = 0.0
+        self.values = np.zeros(k)    # Aquí guardamos las estimaciones de recompensa media Q(a)
+        self.counts = np.zeros(k)    # Número de veces que hemos jugado cada brazo
 
     def get_algorithm_label(self) -> str:
         label = type(self).__name__ + f" (tau={self.tau})"
         return label
 
     def select_arm(self) -> int:
-        exp_preferences = np.exp(self.preferences / self.tau)
-        probs = exp_preferences / np.sum(exp_preferences)
+        scaled_values = self.values / self.tau
+        # Estabilización numérica: restamos el máximo antes de aplicar exp
+        max_scaled = np.max(scaled_values)
+        exp_values = np.exp(scaled_values - max_scaled)
+        probs = exp_values / np.sum(exp_values)
         return np.random.choice(self.k, p=probs)
 
+
     def update(self, arm: int, reward: float):
-        exp_preferences = np.exp(self.preferences / self.tau)
-        probs = exp_preferences / np.sum(exp_preferences)
-        self.baseline += (reward - self.baseline) / (self.t + 1)
-        baseline = self.baseline
-        self.preferences += 0.1 * (reward - baseline) * (np.eye(self.k)[arm] - probs)
-        self.t += 1
+        self.counts[arm] += 1
+        # Actualizamos la media incrementalmente (promedio incremental)
+        self.values[arm] += (reward - self.values[arm]) / self.counts[arm]
         super().update(arm, reward)
 
     def reset(self):
         super().reset()
-        self.preferences = np.zeros(self.k)
-        self.t = 0
-        self.baseline = 0.0
+        self.values = np.zeros(self.k)
+        self.counts = np.zeros(self.k)
